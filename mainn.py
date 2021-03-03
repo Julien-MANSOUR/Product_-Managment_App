@@ -17,7 +17,8 @@ class Main(QMainWindow):
     def UI(self):
         self.toolBar()
         self.tabWidget()
-
+        self.widgets()
+        self.layouts()
 
     def toolBar(self):
         self.tb = self.addToolBar("Tool Bar")
@@ -45,7 +46,35 @@ class Main(QMainWindow):
         self.tabs.addTab(self.tab1,"Products")
         self.tabs.addTab(self.tab2,"Members")
         self.tabs.addTab(self.tab3,"Statistics")
-    
+
+    def widgets(self):
+        ###################Tab1 Layout###################
+        ###################Product Table###################
+        self.productTable=QTableWidget()
+        self.productTable.setColumnCount(6)
+        self.productTable.setColumnHidden(0,True)#i want to hide the id column , we just want to use the id , no need to show it
+        self.productTable.setHorizontalHeaderItem(0,QTableWidgetItem("Product Id"))
+        self.productTable.setHorizontalHeaderItem(1,QTableWidgetItem("Product Name"))
+        self.productTable.setHorizontalHeaderItem(2,QTableWidgetItem("Manufacturer"))
+        self.productTable.setHorizontalHeaderItem(3,QTableWidgetItem("Price"))
+        self.productTable.setHorizontalHeaderItem(4,QTableWidgetItem("Qouta"))
+        self.productTable.setHorizontalHeaderItem(5,QTableWidgetItem("Availability"))
+
+
+    def layouts(self):
+        ###################Tab1 Layout###################
+        self.mainLayout=QHBoxLayout()
+        self.leftMainLayout=QVBoxLayout()
+        self.rightMainLayout=QVBoxLayout()
+        self.rightTopLayout=QHBoxLayout()
+        self.rightMiddleLayout=QHBoxLayout()
+        self.topGroupBox=QGroupBox()
+        self.middleGroupBox=QGroupBox()
+        ###################setting layouts###################
+        self.mainLayout.addLayout(self.leftMainLayout)
+        self.leftMainLayout.addWidget(self.productTable)
+        self.tab1.setLayout(self.mainLayout)
+
 def main():
     App = QApplication(sys.argv)
     # App.setWindowIcon(QIcon("icons/icon.ico")) we con put an icon to the window in this way too
