@@ -16,24 +16,36 @@ class Main(QMainWindow):
 
     def UI(self):
         self.toolBar()
+        self.tabWidget()
+
 
     def toolBar(self):
         self.tb = self.addToolBar("Tool Bar")
         self.tb.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)  # so the name we chose could appear under the button
         ##################ToolBar Button###################
         #################Add Product ######################
-        self.addProduct=QAction(QIcon("icons/add.png"),"Add Product",self)
+        self.addProduct = QAction(QIcon("icons/add.png"), "Add Product", self)
         self.tb.addAction(self.addProduct)
         self.tb.addSeparator()
-        #################Add Product ######################
-        self.addMember=QAction(QIcon("icons/users.png"),"Add Member",self)
+        #################Add Member ######################
+        self.addMember = QAction(QIcon("icons/users.png"), "Add Member", self)
         self.tb.addAction(self.addMember)
         self.tb.addSeparator()
-        #################Add Product ######################
-        self.sellProduct=QAction(QIcon("icons/sell.png"),"Sell Product",self)
+        #################Sell Product ######################
+        self.sellProduct = QAction(QIcon("icons/sell.png"), "Sell Product", self)
         self.tb.addAction(self.sellProduct)
         self.tb.addSeparator()
 
+    def tabWidget(self):
+        self.tabs=QTabWidget()
+        self.setCentralWidget(self.tabs)
+        self.tab1=QWidget()
+        self.tab2=QWidget()
+        self.tab3=QWidget()
+        self.tabs.addTab(self.tab1,"Products")
+        self.tabs.addTab(self.tab2,"Members")
+        self.tabs.addTab(self.tab3,"Statistics")
+    
 def main():
     App = QApplication(sys.argv)
     # App.setWindowIcon(QIcon("icons/icon.ico")) we con put an icon to the window in this way too
