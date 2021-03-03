@@ -9,7 +9,7 @@ class Main(QMainWindow):
         super().__init__()
         self.setWindowTitle("Product Manager")
         self.setWindowIcon(QIcon("icons/icon.ico"))
-        self.setGeometry(450, 150, 1350, 750)
+        self.setGeometry(250, 250, 1000, 500)
         self.setFixedSize(self.size())  # to fix windows size without minimize or maximize it
         self.UI()
         self.show()
@@ -49,7 +49,7 @@ class Main(QMainWindow):
 
     def widgets(self):
         ###################Tab1 Layout###################
-        ###################Product Table###################
+        ###################Left Main Layout widget###################
         self.productTable=QTableWidget()
         self.productTable.setColumnCount(6)
         self.productTable.setColumnHidden(0,True)#i want to hide the id column , we just want to use the id , no need to show it
@@ -59,6 +59,19 @@ class Main(QMainWindow):
         self.productTable.setHorizontalHeaderItem(3,QTableWidgetItem("Price"))
         self.productTable.setHorizontalHeaderItem(4,QTableWidgetItem("Qouta"))
         self.productTable.setHorizontalHeaderItem(5,QTableWidgetItem("Availability"))
+        ###################Right Main Layout widget###################
+        ###################Right  top Layout widget###################
+        self.searchText=QLabel("Search")
+        self.searchEntry=QLineEdit()
+        self.searchEntry.setPlaceholderText("Search For Products")
+        self.searchButton=QPushButton("Search")
+        ###################Right  middle Layout widgets###################
+        self.allProducts=QRadioButton("All Products")
+        self.availableProducts=QRadioButton("Available")
+        self.notAvailableProducts=QRadioButton("Not Available")
+        self.listButton=QPushButton("List")
+
+
 
 
     def layouts(self):
@@ -68,11 +81,30 @@ class Main(QMainWindow):
         self.rightMainLayout=QVBoxLayout()
         self.rightTopLayout=QHBoxLayout()
         self.rightMiddleLayout=QHBoxLayout()
-        self.topGroupBox=QGroupBox()
-        self.middleGroupBox=QGroupBox()
-        ###################setting layouts###################
-        self.mainLayout.addLayout(self.leftMainLayout)
+        self.topGroupBox=QGroupBox("Search Box")
+        self.middleGroupBox=QGroupBox("List Box")
+        ###################Add layouts###################
+        self.mainLayout.addLayout(self.leftMainLayout,70)
         self.leftMainLayout.addWidget(self.productTable)
+        ##################Right Main Layout#####################
+        self.mainLayout.addLayout(self.rightMainLayout,30)
+        self.rightMainLayout.addWidget(self.topGroupBox)
+        self.rightMainLayout.addWidget(self.middleGroupBox)
+            ##########Right top  Layout widgets##############
+        self.rightTopLayout.addWidget(self.searchText)
+        self.rightTopLayout.addWidget(self.searchEntry)
+        self.rightTopLayout.addWidget(self.searchButton)
+        self.topGroupBox.setLayout(self.rightTopLayout)
+            ##########Right middle  Layout widgets##############
+        self.rightMiddleLayout.addWidget(self.allProducts)
+        self.rightMiddleLayout.addWidget(self.availableProducts)
+        self.rightMiddleLayout.addWidget(self.notAvailableProducts)
+        self.rightMiddleLayout.addWidget(self.listButton)
+        self.middleGroupBox.setLayout(self.rightMiddleLayout)
+
+
+
+
         self.tab1.setLayout(self.mainLayout)
 
 def main():
