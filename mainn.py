@@ -48,7 +48,9 @@ class Main(QMainWindow):
         self.tabs.addTab(self.tab3,"Statistics")
 
     def widgets(self):
-        ###################Tab1 Layout###################
+        #################################################
+        ###################Tab1 Widgets###################
+        #################################################
         ###################Left Main Layout widget###################
         self.productTable=QTableWidget()
         self.productTable.setColumnCount(6)
@@ -71,11 +73,29 @@ class Main(QMainWindow):
         self.notAvailableProducts=QRadioButton("Not Available")
         self.listButton=QPushButton("List")
 
+        #################################################
+        ###################Tab2 Widgets###################
+        #################################################
+        ###################Left  widget###########
+        self.memberTable=QTableWidget()
+        self.memberTable.setColumnCount(4)
+        self.memberTable.setHorizontalHeaderItem(0,QTableWidgetItem("Member ID"))
+        self.memberTable.setHorizontalHeaderItem(1,QTableWidgetItem("Member Name"))
+        self.memberTable.setHorizontalHeaderItem(2,QTableWidgetItem("Member Surname"))
+        self.memberTable.setHorizontalHeaderItem(3,QTableWidgetItem("Member Phone"))
+        ###################Right widget###################
+        self.memberSearchText=QLabel("Search Members")
+        self.memberSearchEntry=QLineEdit()
+        self.memberSearchButton=QPushButton("Button")
+
+
 
 
 
     def layouts(self):
+        #################################################
         ###################Tab1 Layout###################
+        #################################################
         self.mainLayout=QHBoxLayout()
         self.leftMainLayout=QVBoxLayout()
         self.rightMainLayout=QVBoxLayout()
@@ -101,11 +121,28 @@ class Main(QMainWindow):
         self.rightMiddleLayout.addWidget(self.notAvailableProducts)
         self.rightMiddleLayout.addWidget(self.listButton)
         self.middleGroupBox.setLayout(self.rightMiddleLayout)
+        self.tab1.setLayout(self.mainLayout)#tab1
+        ########################################################
+        ###################Tab1 Layout##########################
+        ########################################################
+        self.memberMainLayout=QHBoxLayout()
+        self.memberLeftLayout=QVBoxLayout()
+        self.memberRightLayout=QHBoxLayout()
+        self.memberRightGroupBox=QGroupBox("Search For Members")
+        self.memberRightGroupBox.setContentsMargins(5,5,5,300)#im adding 300 pixels for botumn
+        ###################Add layouts###########################
+        self.memberMainLayout.addLayout(self.memberLeftLayout,70)
+        self.memberMainLayout.addWidget(self.memberRightGroupBox,30)
+        ###################Add Left widgets###########################
+        self.memberLeftLayout.addWidget(self.memberTable)
+        ###################Add Right widgets###########################
+        self.memberRightLayout.addWidget(self.memberSearchText)
+        self.memberRightLayout.addWidget(self.memberSearchEntry)
+        self.memberRightLayout.addWidget(self.memberSearchButton)
+        self.memberRightGroupBox.setLayout(self.memberRightLayout)
+        self.tab2.setLayout(self.memberMainLayout)
 
 
-
-
-        self.tab1.setLayout(self.mainLayout)
 
 def main():
     App = QApplication(sys.argv)
