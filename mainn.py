@@ -1,6 +1,6 @@
 import sys
 import sqlite3
-import addproduct
+import addproduct, addmember
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
@@ -40,6 +40,7 @@ class Main(QMainWindow):
         #################Add Member ######################
         self.addMember = QAction(QIcon("icons/users.png"), "Add Member", self)
         self.tb.addAction(self.addMember)
+        self.addMember.triggered.connect(self.funAddMember)
         self.tb.addSeparator()
         #################Sell Product ######################
         self.sellProduct = QAction(QIcon("icons/sell.png"), "Sell Product", self)
@@ -151,8 +152,12 @@ class Main(QMainWindow):
         ########################################################
         ###################Action functions######################
         ########################################################
+
     def funcAddProduct(self):
         self.newProduct = addproduct.AddProduct()  # addproduct is our new python file/ AddProduct is the class
+
+    def funAddMember(self):
+        self.newMember = addmember.AddMember()
 
 
 def main():
