@@ -47,6 +47,7 @@ class AddProduct(QWidget):
         self.uploadBtn = QPushButton("Upload")
         self.uploadBtn.clicked.connect(self.uploadImg)
         self.submitBtn = QPushButton("Submit")
+        self.submitBtn.clicked.connect(self.addProduct)
 
     def layouts(self):
         self.mainLayout = QVBoxLayout()
@@ -73,6 +74,7 @@ class AddProduct(QWidget):
         self.mainLayout.addWidget(self.topFrame)
         self.mainLayout.addWidget(self.bottomFrame)
         self.setLayout(self.mainLayout)
+
     ########################################Action functions##################################
 
     ####################mUploading Image #################3
@@ -88,7 +90,26 @@ class AddProduct(QWidget):
             img = img.resize(size)
             img.save("img/{0}".format(defaultImg))
 
-
+    ####################add Product to data base #################
+    def addProduct(self):
+        global defaultImg
+        name = self.nameEntry.text()
+        manufacturer = self.manufactirerEntry.text()
+        price = self.priceEntry.text()
+        qouta = self.qoutaEntry.text()
+        #img is already in defaultImg
+        #product availability has already a default value:Available
+        if (name and manufacturer and price and qouta !=""):#should not be empty
+            try:
+                query="INSERT INTO 'products' (product_name,product_manufacturer,product_price,product_qouta,product_img) VALUES(?,?,?,?,?) "
+                cur.execute(query,(name,manufacturer,price,qouta,defaultImg))
+                con.commit()#when we change something in the data base we should commit the change
+                QMessageBox.information(self,"Info","Product has been added successfully")
+                con.close()
+            except:
+                QMessageBox.warning(self,"Warning","Product has not been added !")
+        else:
+            QMessageBox.warning(self,"Warning","Fields cant be empty !!")
 def main():
     App = QApplication(sys.argv)
     # App.setWindowIcon(QIcon("icons/icon.ico")) we con put an icon to the window in this way too
