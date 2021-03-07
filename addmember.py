@@ -44,7 +44,7 @@ class AddMember(QWidget):
         self.phoneEntry = QLineEdit()
         self.phoneEntry.setPlaceholderText("Enter phone number")
         self.submitBtn=QPushButton("Submit")
-
+        self.submitBtn.clicked.connect(self.addMember)
 
 
 
@@ -70,6 +70,28 @@ class AddMember(QWidget):
         self.mainLayout.addWidget(self.topFrame)
         self.mainLayout.addWidget(self.bottomFrame)
         self.setLayout(self.mainLayout)
+
+    #######################Action functions ##########################
+    def addMember(self):
+        self.name=self.nameEntry.text()
+        self.surname=self.surnameEntry.text()
+        self.phone=self.phoneEntry.text()
+
+        if (self.name and self.surname and self.phone !=""):
+            try:
+                query="INSERT INTO 'members' (member_name, member_surname, member_phone) VALUES(?,?,?) "
+                cur.execute(query,(self.name,self.surname,self.phone))
+                con.commit()
+                QMessageBox.information(self,"Info","Member has been added successfully")
+                self.nameEntry.setText("")
+                self.surnameEntry.setText("")
+                self.phoneEntry.setText("")
+                con.close()
+            except :
+                QMessageBox.warning(self,"Warning","Member has not been added")
+
+        else:
+            QMessageBox.warning(self, "Warning", "Fields cant be empty !!")
 
 
 
