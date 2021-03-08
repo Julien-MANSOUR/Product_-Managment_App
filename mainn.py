@@ -27,6 +27,7 @@ class Main(QMainWindow):
         self.tabWidget()
         self.widgets()
         self.layouts()
+        self.displayProduct()
 
     def toolBar(self):
         self.tb = self.addToolBar("Tool Bar")
@@ -72,6 +73,8 @@ class Main(QMainWindow):
         self.productTable.setHorizontalHeaderItem(3, QTableWidgetItem("Price"))
         self.productTable.setHorizontalHeaderItem(4, QTableWidgetItem("Qouta"))
         self.productTable.setHorizontalHeaderItem(5, QTableWidgetItem("Availability"))
+        # row=self.productTable.rowCount()
+        # print("row",row)
         ###################Right Main Layout widget###################
         ###################Right  top Layout widget###################
         self.searchText = QLabel("Search")
@@ -159,6 +162,24 @@ class Main(QMainWindow):
     def funAddMember(self):
         self.newMember = addmember.AddMember()
 
+    def displayProduct(self):
+        print("display products")
+        print(self.productTable.rowCount())
+        # we need to remove or clean our table widgets first
+        for i in reversed(range(self.productTable.rowCount())):
+            print("i:",i)
+            self.productTable.removeRow(i)
+        query = cur.execute("SELECT product_id,product_name,product_manufacturer,product_price,product_qouta, product_availability FROM products")
+        for row_data in query:#0,1,2
+            print(row_data) # first row :(1, 'Playstation', 'Sony', 300, 50, 'Available'),second :(2, 'computer', 'HP', 1200, 21, 'Available'),third: (3, 'S9', 'Samsung', 400, 33, 'Available')
+            row_number = self.productTable.rowCount()
+            print(row_number)#0,1,2
+            self.productTable.insertRow(row_number)#inserting row zero,row 1 , row 2
+            #exemple if there is 3 rows in the query
+            #the first time i insert an empty row in the table, then i fill it with info from the query
+            for column_number, data in enumerate(row_data): #column number is how many element in the row_data list
+                self.productTable.setItem(row_number,column_number,QTableWidgetItem(str(data)))
+        self.productTable.setEditTriggers(QAbstractItemView.NoEditTriggers)#this line will prevent someone from changing the table product
 
 def main():
     App = QApplication(sys.argv)
