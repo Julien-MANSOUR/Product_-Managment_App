@@ -76,7 +76,7 @@ class Main(QMainWindow):
         self.productTable.setHorizontalHeaderItem(5, QTableWidgetItem("Availability"))
         self.productTable.horizontalHeader().setSectionResizeMode(1,QHeaderView.Stretch)#to resize the product name and manufacturer columns
         self.productTable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Stretch)
-
+        self.productTable.doubleClicked.connect(self.selectedProduct)
 
         ###################Right Main Layout widget###################
         ###################Right  top Layout widget###################
@@ -193,11 +193,47 @@ class Main(QMainWindow):
             self.memberTable.removeRow(i)
         query=con.execute("SELECT member_id,member_name,member_surname,member_phone FROM members")
         for row_number,row_data in enumerate(query):
+            print(row_data)
             print("Row",row_number) #another methode
             self.memberTable.insertRow(row_number)
             for column_number, data in enumerate(row_data):
                 self.memberTable.setItem(row_number,column_number,QTableWidgetItem(str(data)))
         self.memberTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
+    def selectedProduct(self):
+        global productId #so we could use it the id in another class
+        listProduct=[]
+        for i in range(0,6):#we have 6 feildes (prodct ud, prod name...)
+            listProduct.append(self.productTable.item(self.productTable.currentRow(),i).text())
+            #result(listproduct values each lap) of this for loop:
+            #['1']
+            #['1', 'Playstation']
+            #['1', 'Playstation', 'Sony']
+            #['1', 'Playstation', 'Sony', '300']
+            #['1', 'Playstation', 'Sony', '300', '50']
+            #['1', 'Playstation', 'Sony', '300', '50', 'Available']
+        productId=listProduct[0]# first elment is the id that we gonna use it after
+        self.display=DisplayProduct()
+
+
+        
+    ###################################################################################
+    ###################New Class for displaying each product spec######################
+    ###################################################################################
+class DisplayProduct(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Product Details")
+        self.setWindowIcon(QIcon("icons/icon.ico"))
+        self.setGeometry(450,150,350,600)
+        self.setFixedSize(self.size())
+        self.UI()
+        self.show()
+
+    def UI(self):
+        pass
+
+###########################################################MAIN######################################
 def main():
     App = QApplication(sys.argv)
     # App.setWindowIcon(QIcon("icons/icon.ico")) we con put an icon to the window in this way too
