@@ -11,7 +11,6 @@ from PyQt5.QtCore import Qt
 con = sqlite3.connect("Products.db")
 cur = con.cursor()
 
-
 class Main(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -28,6 +27,8 @@ class Main(QMainWindow):
         self.widgets()
         self.layouts()
         self.displayProduct()
+        self.displayMembers()
+
 
     def toolBar(self):
         self.tb = self.addToolBar("Tool Bar")
@@ -73,8 +74,10 @@ class Main(QMainWindow):
         self.productTable.setHorizontalHeaderItem(3, QTableWidgetItem("Price"))
         self.productTable.setHorizontalHeaderItem(4, QTableWidgetItem("Qouta"))
         self.productTable.setHorizontalHeaderItem(5, QTableWidgetItem("Availability"))
-        # row=self.productTable.rowCount()
-        # print("row",row)
+        self.productTable.horizontalHeader().setSectionResizeMode(1,QHeaderView.Stretch)#to resize the product name and manufacturer columns
+        self.productTable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Stretch)
+
+
         ###################Right Main Layout widget###################
         ###################Right  top Layout widget###################
         self.searchText = QLabel("Search")
@@ -97,10 +100,12 @@ class Main(QMainWindow):
         self.memberTable.setHorizontalHeaderItem(1, QTableWidgetItem("Member Name"))
         self.memberTable.setHorizontalHeaderItem(2, QTableWidgetItem("Member Surname"))
         self.memberTable.setHorizontalHeaderItem(3, QTableWidgetItem("Member Phone"))
+        self.memberTable.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.memberTable.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         ###################Right widget###################
         self.memberSearchText = QLabel("Search Members")
         self.memberSearchEntry = QLineEdit()
-        self.memberSearchButton = QPushButton("Button")
+        self.memberSearchButton = QPushButton("Search")
 
     def layouts(self):
         #################################################
@@ -163,6 +168,7 @@ class Main(QMainWindow):
         self.newMember = addmember.AddMember()
 
     def displayProduct(self):
+        self.productTable.setFont(QFont("Times",12))
         print("display products")
         print(self.productTable.rowCount())
         # we need to remove or clean our table widgets first
@@ -180,7 +186,18 @@ class Main(QMainWindow):
             for column_number, data in enumerate(row_data): #column number is how many element in the row_data list
                 self.productTable.setItem(row_number,column_number,QTableWidgetItem(str(data)))
         self.productTable.setEditTriggers(QAbstractItemView.NoEditTriggers)#this line will prevent someone from changing the table product
-
+    
+    def displayMembers(self):
+        self.memberTable.setFont(QFont("Times", 12))
+        for i in reversed(range(self.memberTable.rowCount())):
+            self.memberTable.removeRow(i)
+        query=con.execute("SELECT member_id,member_name,member_surname,member_phone FROM members")
+        for row_number,row_data in enumerate(query):
+            print("Row",row_number) #another methode
+            self.memberTable.insertRow(row_number)
+            for column_number, data in enumerate(row_data):
+                self.memberTable.setItem(row_number,column_number,QTableWidgetItem(str(data)))
+        self.memberTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
 def main():
     App = QApplication(sys.argv)
     # App.setWindowIcon(QIcon("icons/icon.ico")) we con put an icon to the window in this way too
