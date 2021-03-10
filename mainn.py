@@ -279,8 +279,9 @@ class DisplayMember(QWidget):
         self.phoneEntry=QLineEdit()
         self.phoneEntry.setText(self.memberPhone)
         self.deleteBtn=QPushButton("Delete")
+        self.deleteBtn.clicked.connect(self.deleteMember)
         self.updateBtn=QPushButton("Update")
-
+        self.updateBtn.clicked.connect(self.updateMember)
 
     def layouts(self):
         self.mainLayout=QVBoxLayout()
@@ -306,16 +307,37 @@ class DisplayMember(QWidget):
         self.mainLayout.addWidget(self.bottomFrame)
         self.setLayout(self.mainLayout)
 
+    ######################Actions Functions ################################
+    def deleteMember(self):
+        global memberId
+        choice = QMessageBox.question(self,"WARNING","Are you sure you want to delete this member?!",QMessageBox.Yes|QMessageBox.No,QMessageBox.No)
+        if choice == QMessageBox.Yes:
+            try:
+                cur.execute(("DELETE FROM members WHERE member_id=?"),(memberId))
+                con.commit()
+                QMessageBox.information(self,"INFO","Member has been deleted")
+                self.close()
+            except :
+                QMessageBox.information(self, "WARNING", "Member has not been deleted")
 
+    def updateMember(self):
+        global memberId
+        name = self.nameEntry.text()
+        surname= self.surnameEntry.text()
+        phone= self.phoneEntry.text()
 
+        if (name and surname and phone != ""):
+            try:
+                query="UPDATE members SET member_name=?,member_surname=?,member_phone=? WHERE member_id=? "
+                cur.execute(query,(name,surname,phone,memberId))
+                con.commit()
+                QMessageBox.information(self, "INFO", "Member has been updated successfully")
 
+            except :
+                QMessageBox.information(self, "WARNING", "Member has not been updated")
 
-
-
-
-
-
-
+        else:
+            QMessageBox.information(self, "WARNING", "Fields cannot be empty!!")
 
 
 
