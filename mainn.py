@@ -1,10 +1,10 @@
-import sys
+import sys,os
 import sqlite3
 import addproduct, addmember
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
-
+from PIL import Image
 #################################################
 ######Data base#######
 #################################################
@@ -269,9 +269,11 @@ class DisplayProduct(QWidget):
         self.availabilityComboBox=QComboBox()
         self.availabilityComboBox.addItems(["Available","Unavailable"])
         self.uploadBtn=QPushButton("Upload")
+        self.uploadBtn.clicked.connect(self.uploadImageFunc)
         self.deleteBtn=QPushButton("Delete")
+        self.deleteBtn.clicked.connect(self.deleteProductFunc)
         self.updateBtn=QPushButton("Update")
-
+        self.updateBtn.clicked.connect(self.updateProductFunc)
 
     def layouts(self):
         self.mainLayout=QVBoxLayout()
@@ -298,7 +300,52 @@ class DisplayProduct(QWidget):
         self.mainLayout.addWidget(self.topFrame)
         self.mainLayout.addWidget(self.bottomFrame)
         self.setLayout(self.mainLayout)
+    ################################Action Functions################
+    def uploadImageFunc(self):
+        size=(256,256)
+        self.filename, ok= QFileDialog.getOpenFileName(self,"Upload Image","","Image Files (*.png *.jpg)")
+        if ok:
+            self.productImg=os.path.basename(self.filename)#filename is contains the path from where i chose the picture
+            img=Image.open(self.filename)#then i open the img
+            img=img.resize(size)
+            img.save("img/{}".format(self.productImg))
 
+    def updateProductFunc(self):
+        global productId
+        name= self.nameEntry.text()
+        manufacturer= self.manufacturerEntry.text()
+        price= int(self.priceEntry.text())
+        qouta= int(self.qoutaEntry.text())
+        status= self.availabilityComboBox.currentText()
+        img=self.productImg
+
+        if (name and manufacturer and price and qouta != ""):
+            try:
+                query = "UPDATE products set product_name=? ,product_manufacturer=? ,product_price=? ,product_qouta=?,product_img= ?,product_availability=? WHERE product_id=? "
+                cur.execute(query, (name, manufacturer, price, qouta, img, status,productId))
+                con.commit()
+                QMessageBox.information(self, "Info", "Product has been successfully updated")
+            except:
+                QMessageBox.information(self, "WARNING", "Product has not  been  updated")
+        else:
+            QMessageBox.information(self,"Warning","Fields cant be empty !!")
+            
+    def deleteProductFunc(self):
+        global productId
+        choice= QMessageBox.question(self,"WARNING","Are you sure you want to delete this product?",QMessageBox.Yes|QMessageBox.No,QMessageBox.No)
+        if (choice == QMessageBox.Yes):
+            try:
+                cur.execute("DELETE FROM products WHERE product_id=?",(productId,))
+                con.commit()
+                QMessageBox.information(self,"Info","Product has been deleted")
+            except:
+                QMessageBox.information(self, "WARNING", "Product has not been deleted")
+
+
+            
+            
+            
+            
 ###########################################################MAIN######################################
 def main():
     App = QApplication(sys.argv)
