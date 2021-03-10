@@ -216,7 +216,7 @@ class Main(QMainWindow):
         self.display=DisplayProduct()
 
 
-        
+
     ###################################################################################
     ###################New Class for displaying each product spec######################
     ###################################################################################
@@ -231,7 +231,73 @@ class DisplayProduct(QWidget):
         self.show()
 
     def UI(self):
-        pass
+        self.productDetails()
+        self.widgets()
+        self.layouts()
+
+
+    ####################FETCHINF DATA using product ID of the chosen product################
+    def productDetails(self):
+        global productId
+        query=("SELECT * FROM products WHERE product_id=?")
+        productDetails=cur.execute(query,(productId,)).fetchone()
+        print(productDetails)#(1, 'Playstation', 'Sony', 300, 50, '71PGvPXpk5L._AC_.jpg', 'Available')
+        self.productName=productDetails[1]
+        self.productManufacturer=productDetails[2]
+        self.productPrice=productDetails[3]
+        self.productQouta=productDetails[4]
+        self.productImg=productDetails[5]
+        self.productAvailability=productDetails[6]
+
+
+    def widgets(self):
+        ########################adding top widgets########################
+        self.product_Img=QLabel()
+        self.product_Img.setPixmap( QPixmap("img/{}".format(self.productImg)))
+        self.product_Img.setAlignment(Qt.AlignCenter)
+        self.productText=QLabel("Update Product")
+        self.productText.setAlignment(Qt.AlignCenter)
+        ########################adding bottom widgets####################
+        self.nameEntry=QLineEdit()
+        self.nameEntry.setText(self.productName)
+        self.manufacturerEntry = QLineEdit()
+        self.manufacturerEntry.setText(self.productManufacturer)
+        self.priceEntry = QLineEdit()
+        self.priceEntry.setText(str(self.productPrice))
+        self.qoutaEntry = QLineEdit()
+        self.qoutaEntry.setText(str(self.productQouta))
+        self.availabilityComboBox=QComboBox()
+        self.availabilityComboBox.addItems(["Available","Unavailable"])
+        self.uploadBtn=QPushButton("Upload")
+        self.deleteBtn=QPushButton("Delete")
+        self.updateBtn=QPushButton("Update")
+
+
+    def layouts(self):
+        self.mainLayout=QVBoxLayout()
+        self.topLayout=QVBoxLayout()
+        self.bottomLayout=QFormLayout()
+        self.topFrame=QFrame()
+        self.bottomFrame=QFrame()
+        ####################adding top widgets ##############
+        self.topLayout.addWidget(self.productText)
+        self.topLayout.addWidget(self.product_Img)
+        ####################adding bottom widgets ##############
+        self.bottomLayout.addRow(QLabel("Name: "),self.nameEntry)
+        self.bottomLayout.addRow(QLabel("Manufacturer: "),self.manufacturerEntry)
+        self.bottomLayout.addRow(QLabel("Price: "),self.priceEntry)
+        self.bottomLayout.addRow(QLabel("Qouta: "),self.qoutaEntry)
+        self.bottomLayout.addRow(QLabel("Status: "),self.availabilityComboBox)
+        self.bottomLayout.addRow(QLabel("Image: "),self.uploadBtn)
+        self.bottomLayout.addRow(QLabel(""),self.deleteBtn)
+        self.bottomLayout.addRow(QLabel(""),self.updateBtn)
+
+        ####################setting main Layout#####################
+        self.topFrame.setLayout(self.topLayout)
+        self.bottomFrame.setLayout(self.bottomLayout)
+        self.mainLayout.addWidget(self.topFrame)
+        self.mainLayout.addWidget(self.bottomFrame)
+        self.setLayout(self.mainLayout)
 
 ###########################################################MAIN######################################
 def main():
