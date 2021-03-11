@@ -86,6 +86,7 @@ class Main(QMainWindow):
         self.searchEntry = QLineEdit()
         self.searchEntry.setPlaceholderText("Search For Products")
         self.searchButton = QPushButton("Search")
+        self.searchButton.clicked.connect(self.searchProduct)
         ###################Right  middle Layout widgets###################
         self.allProducts = QRadioButton("All Products")
         self.availableProducts = QRadioButton("Available")
@@ -109,6 +110,7 @@ class Main(QMainWindow):
         self.memberSearchText = QLabel("Search Members")
         self.memberSearchEntry = QLineEdit()
         self.memberSearchButton = QPushButton("Search")
+        self.memberSearchButton.clicked.connect(self.searchMember)
 
     def layouts(self):
         #################################################
@@ -229,6 +231,46 @@ class Main(QMainWindow):
         memberId=listMember[0]
         #print(listMember)
         self.displayMembersWindow=DisplayMember()
+
+    def searchProduct(self):
+        value=self.searchEntry.text()
+        if value == "":
+            QMessageBox.information(self,"WARNING","Search bar cannot be empty!!")
+        else:
+            self.searchEntry.setText("")
+            #i want to display all fields but not the image, and we are searching by our product name, and product manufact only(LIKE ?)
+            query=("SELECT product_id,product_name,product_manufacturer,product_price,product_qouta,product_availability  FROM products WHERE product_name LIKE ? or product_manufacturer LIKE ?")
+            # the % means that the product name or manufct , starts or ends with my value : exemple playstation => we can search by tion or pla
+            results=cur.execute(query,("%"+value+"%","%"+value+"%")).fetchall()
+            if results == []:
+                QMessageBox.information(self, "WARNING", "Cannot find what you are looking for!!")
+            else:
+                #now i should remove evrything on the window and display de nouveau the products detected by our search
+                for i in reversed(range(self.productTable.rowCount())):
+                    self.productTable.removeRow(i)
+                for row_count,row_data in enumerate(results):
+                    self.productTable.insertRow(row_count)
+                    for column,data in enumerate(row_data):
+                        self.productTable.setItem(row_count,column,QTableWidgetItem(str(data)))
+
+    def searchMember(self):
+        value=self.memberSearchEntry.text()
+        if value == "":
+            QMessageBox.information(self,"WARNING","Search bar cannot  be empty")
+        else:
+            query=("SELECT member_id,member_name,member_surname,member_phone FROM members WHERE member_name LIKE ? or member_surname LIKE ? or member_phone LIKE ?")
+            results=cur.execute(query,("%"+value+"%","%"+value+"%","%"+value+"%"))
+            if results == []:
+                QMessageBox.information(self, "WARNING", "Member not found")
+            else:
+                for i in reversed(range(self.memberTable.rowCount())):
+                    self.memberTable.removeRow(i)
+                for row_count,row_data in enumerate(results):#row_count means the number of the current row
+                    self.memberTable.insertRow(row_count)
+                    for column, data in enumerate(row_data):
+                        self.memberTable.setItem(row_count,column,QTableWidgetItem(str(data)))
+
+
 
 
 
