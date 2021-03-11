@@ -81,7 +81,7 @@ class AddProduct(QWidget):
     def uploadImg(self):
         global defaultImg
         size = (256, 256)  # image size
-        self.filename, ok = QFileDialog.getOpenFileName(self, "Upload,Image", "", "Image Files (*.jpg *.png)")
+        self.filename, ok = QFileDialog.getOpenFileName(self, "Upload,Image", "", "Image Files (*.jpg *.png *.jpeg)")
         if ok:
             print(self.filename)  # it gives us the whole URL of the img
             defaultImg = os.path.basename(self.filename)  # only the name of the img.png
@@ -105,7 +105,7 @@ class AddProduct(QWidget):
                 cur.execute(query,(name,manufacturer,price,qouta,defaultImg))
                 con.commit()#when we change something in the data base we should commit the change
                 QMessageBox.information(self,"Info","Product has been added successfully")
-                con.close()
+                #con.close()
             except:
                 QMessageBox.warning(self,"Warning","Product has not been added !")
         else:
