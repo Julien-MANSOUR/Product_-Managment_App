@@ -1,6 +1,6 @@
 import sys, os
 import sqlite3
-import addproduct, addmember
+import addproduct, addmember , sellings
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
@@ -48,6 +48,7 @@ class Main(QMainWindow):
         #################Sell Product ######################
         self.sellProduct = QAction(QIcon("icons/sell.png"), "Sell Product", self)
         self.tb.addAction(self.sellProduct)
+        self.sellProduct.triggered.connect(self.funcSellProduct)
         self.tb.addSeparator()
 
     def tabWidget(self):
@@ -174,6 +175,12 @@ class Main(QMainWindow):
 
     def funAddMember(self):
         self.newMember = addmember.AddMember()
+
+    def funcSellProduct(self):
+        self.sell=sellings.SellProduct()
+
+
+
 
     def displayProduct(self):
         self.productTable.setFont(QFont("Times", 12))
