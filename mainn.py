@@ -64,6 +64,7 @@ class Main(QMainWindow):
         #################################################
         ###################Tab1 Widgets###################
         #################################################
+
         ###################Left Main Layout widget###################
         self.productTable = QTableWidget()
         self.productTable.setColumnCount(6)
@@ -92,10 +93,12 @@ class Main(QMainWindow):
         self.availableProducts = QRadioButton("Available")
         self.notAvailableProducts = QRadioButton("Not Available")
         self.listButton = QPushButton("List")
+        self.listButton.clicked.connect(self.listProducts)
 
         #################################################
         ###################Tab2 Widgets###################
         #################################################
+
         ###################Left  widget###########
         self.memberTable = QTableWidget()
         self.memberTable.setColumnCount(4)
@@ -269,6 +272,31 @@ class Main(QMainWindow):
                     self.memberTable.insertRow(row_count)
                     for column, data in enumerate(row_data):
                         self.memberTable.setItem(row_count,column,QTableWidgetItem(str(data)))
+
+
+    def listProducts(self):
+        if self.allProducts.isChecked() == True:
+            self.displayProduct()
+
+        elif self.availableProducts.isChecked():
+            query=("SELECT product_id,product_name,product_manufacturer,product_price,product_qouta,product_availability FROM products WHERE product_availability='Available'")
+            result= cur.execute(query).fetchall()
+            for i in reversed(range(self.productTable.rowCount())):
+                self.productTable.removeRow(i)
+            for row_count, row_data in enumerate(result):
+                self.productTable.insertRow(row_count)
+                for column, data in enumerate(row_data):
+                    self.productTable.setItem(row_count, column, QTableWidgetItem(str(data)))
+
+        elif self.notAvailableProducts.isChecked():
+            query=("SELECT product_id,product_name,product_manufacturer,product_price,product_qouta,product_availability FROM products WHERE product_availability='Unavailable'")
+            result= cur.execute(query).fetchall()
+            for i in reversed(range(self.productTable.rowCount())):
+                self.productTable.removeRow(i)
+            for row_count, row_data in enumerate(result):
+                self.productTable.insertRow(row_count)
+                for column, data in enumerate(row_data):
+                    self.productTable.setItem(row_count, column, QTableWidgetItem(str(data)))
 
 
 
