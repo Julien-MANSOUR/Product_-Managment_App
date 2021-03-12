@@ -9,6 +9,8 @@ from PIL import Image
 con = sqlite3.connect("Products.db")
 cur = con.cursor()
 
+
+
 class SellProduct(QWidget):
     def __init__(self):
         super().__init__()
@@ -98,11 +100,12 @@ class SellProduct(QWidget):
 
 
     def sellProduct(self):
-        self.productName=self.productCombo.currentText()
-        self.productId=self.productCombo.currentData()# the @hiden values str(product[0])
-        self.memberName=self.memberCombo.currentText()
-        self.memberId=self.memberCombo.currentData()
-        self.quantity=int(self.quantityCombo.currentText())
+        global productName, productId,memberName,memberId,quantity #i need them in the other class
+        productName=self.productCombo.currentText()
+        productId=self.productCombo.currentData()# the @hiden values str(product[0])
+        memberName=self.memberCombo.currentText()
+        memberId=self.memberCombo.currentData()
+        quantity=int(self.quantityCombo.currentText())
         self.confirm=ConfirmWindow()
         self.close()
 
@@ -133,9 +136,16 @@ class ConfirmWindow(QWidget):
         self.sellProductText=QLabel("Sell Product")
         self.sellProductText.setAlignment(Qt.AlignCenter)
         ###########################Bottom widgets################
+        global productName, productId, memberName, memberId, quantity
+        priceQuery=("SELECT product_price FROM products WHERE product_id=?")
+        price=cur.execute(priceQuery,(productId,)).fetchone()
+        ammount=price[0]*quantity
+        print(ammount)
         self.ProductText=QLabel()
+        self.ProductText.setText(productName)
         self.memberText=QLabel()
-        self.ammountText=QLabel()
+        self.memberText.setText(memberName)
+        self.ammountText=QLabel("{}x{}={}".format(price[0],quantity,ammount))
         self.confirmBtn=QPushButton("Confirm")
         
     def layouts(self):
@@ -160,5 +170,4 @@ class ConfirmWindow(QWidget):
         self.mainLayout.addWidget(self.bottomFrame)
         self.setLayout(self.mainLayout)
 
-        
-        
+    
