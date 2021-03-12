@@ -36,6 +36,7 @@ class SellProduct(QWidget):
         self.memberCombo=QComboBox()
         self.quantityCombo=QComboBox()
         self.submitBtn=QPushButton("Submit")
+        self.submitBtn.clicked.connect(self.sellProduct)
 
 
 
@@ -96,6 +97,68 @@ class SellProduct(QWidget):
 
 
 
+    def sellProduct(self):
+        self.productName=self.productCombo.currentText()
+        self.productId=self.productCombo.currentData()# the @hiden values str(product[0])
+        self.memberName=self.memberCombo.currentText()
+        self.memberId=self.memberCombo.currentData()
+        self.quantity=int(self.quantityCombo.currentText())
+        self.confirm=ConfirmWindow()
+        self.close()
 
 
+##############################################################
+#######################ConfirmWindow Class##########################
+##############################################################
 
+class ConfirmWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Add Product")
+        self.setWindowIcon(QIcon("icons/icon.ico"))
+        self.setGeometry(458, 150, 350, 600)
+        self.setFixedSize(self.size())
+        self.UI()
+        self.show()
+
+    def UI(self):
+        self.widgets()
+        self.layouts()
+
+    def widgets(self):
+        ##########################top widgets####################
+        self.sellProductImg=QLabel()
+        self.sellProductImg.setPixmap(QPixmap("icons/shop.png"))
+        self.sellProductImg.setAlignment(Qt.AlignCenter)
+        self.sellProductText=QLabel("Sell Product")
+        self.sellProductText.setAlignment(Qt.AlignCenter)
+        ###########################Bottom widgets################
+        self.ProductText=QLabel()
+        self.memberText=QLabel()
+        self.ammountText=QLabel()
+        self.confirmBtn=QPushButton("Confirm")
+        
+    def layouts(self):
+        self.mainLayout=QVBoxLayout()
+        self.topLayout=QVBoxLayout()
+        self.bottomLayout=QFormLayout()
+        self.topFrame=QFrame()
+        self.bottomFrame=QFrame()
+        #############################Adding top widgets####################
+        self.topLayout.addWidget(self.sellProductText)
+        self.topLayout.addWidget(self.sellProductImg)
+        #############################Adding Bottom widgets####################
+        self.bottomLayout.addRow(QLabel("Product: "),self.ProductText)
+        self.bottomLayout.addRow(QLabel("Memeber: "),self.memberText)
+        self.bottomLayout.addRow(QLabel("Amount: "),self.ammountText)
+        self.bottomLayout.addRow(QLabel(""),QLabel(""))
+        self.bottomLayout.addRow(QLabel(""),self.confirmBtn)
+        ############################ Setting mainlayout ####################
+        self.topFrame.setLayout(self.topLayout)
+        self.bottomFrame.setLayout(self.bottomLayout)
+        self.mainLayout.addWidget(self.topFrame)
+        self.mainLayout.addWidget(self.bottomFrame)
+        self.setLayout(self.mainLayout)
+
+        
+        
