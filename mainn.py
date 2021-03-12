@@ -116,6 +116,27 @@ class Main(QMainWindow):
         self.memberSearchButton = QPushButton("Search")
         self.memberSearchButton.clicked.connect(self.searchMember)
 
+        ##########################################################
+        ###################Tab3 Widgets###########################
+        ##########################################################
+        self.totalProducts = 0
+        productQoutaQuery=("SELECT product_qouta FROM products ")
+        productsQuantity=cur.execute(productQoutaQuery).fetchall()
+        for  product in productsQuantity:
+            self.totalProducts += 1
+        self.totalProductsValue=QLabel()
+        self.totalProductsValue.setText(str(self.totalProducts))
+        self.totalMembers = 0
+        membersQuery = ("SELECT * FROM members ")
+        members = cur.execute(productQoutaQuery).fetchall()
+        for member in members:
+            self.totalMembers  += 1
+        self.totalMembersValue=QLabel()
+        self.totalMembersValue.setText(str( self.totalMembers))
+        self.soldProductsValue=QLabel()
+        self.totalAmountValue=QLabel()
+
+
     def layouts(self):
         #################################################
         ###################Tab1 Layout###################
@@ -147,7 +168,7 @@ class Main(QMainWindow):
         self.middleGroupBox.setLayout(self.rightMiddleLayout)
         self.tab1.setLayout(self.mainLayout)  # tab1
         ########################################################
-        ###################Tab1 Layout##########################
+        ###################Tab2 Layout##########################
         ########################################################
         self.memberMainLayout = QHBoxLayout()
         self.memberLeftLayout = QVBoxLayout()
@@ -165,6 +186,24 @@ class Main(QMainWindow):
         self.memberRightLayout.addWidget(self.memberSearchButton)
         self.memberRightGroupBox.setLayout(self.memberRightLayout)
         self.tab2.setLayout(self.memberMainLayout)
+
+        ########################################################
+        ###################Tab3 Layout##########################
+        ########################################################
+        self.statisticsMainLayout=QVBoxLayout()
+        self.statisticsLayout=QFormLayout()
+        self.statisticsGroupBox=QGroupBox("Statistics")
+        self.statisticsGroupBox.setLayout(self.statisticsLayout)
+        self.statisticsGroupBox.setFont(QFont("Arial",28))
+        self.statisticsMainLayout.addWidget(self.statisticsGroupBox)
+        self.tab3.setLayout(self.statisticsMainLayout)
+        ###############Adding statistics Form LAyout widgets################
+        self.statisticsLayout.addRow(QLabel("Total Products: "), self.totalProductsValue)
+        self.statisticsLayout.addRow(QLabel("Total members: "), self.totalMembersValue)
+        self.statisticsLayout.addRow(QLabel("Sold Products: "), self.soldProductsValue)
+        self.statisticsLayout.addRow(QLabel("Total Amount: "),self.totalAmountValue)
+
+
 
         ########################################################
         ###################Action functions######################
