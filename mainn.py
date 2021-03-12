@@ -30,6 +30,7 @@ class Main(QMainWindow):
         self.layouts()
         self.displayProduct()
         self.displayMembers()
+        self.getSatistics()
 
     def toolBar(self):
         self.tb = self.addToolBar("Tool Bar")
@@ -53,6 +54,9 @@ class Main(QMainWindow):
 
     def tabWidget(self):
         self.tabs = QTabWidget()
+        self.tabs.blockSignals(True)#we use it at first of creating  tabs , and we use another one at the end , to help refreshing our tabs each time we add something
+        #because block signals is not enough we can creat another function to recall the displaying functions
+        self.tabs.currentChanged.connect(self.tabChanged)
         self.setCentralWidget(self.tabs)
         self.tab1 = QWidget()
         self.tab2 = QWidget()
@@ -119,20 +123,8 @@ class Main(QMainWindow):
         ##########################################################
         ###################Tab3 Widgets###########################
         ##########################################################
-        self.totalProducts = 0
-        productQoutaQuery=("SELECT product_qouta FROM products ")
-        productsQuantity=cur.execute(productQoutaQuery).fetchall()
-        for  product in productsQuantity:
-            self.totalProducts += 1
         self.totalProductsValue=QLabel()
-        self.totalProductsValue.setText(str(self.totalProducts))
-        self.totalMembers = 0
-        membersQuery = ("SELECT * FROM members ")
-        members = cur.execute(productQoutaQuery).fetchall()
-        for member in members:
-            self.totalMembers  += 1
         self.totalMembersValue=QLabel()
-        self.totalMembersValue.setText(str( self.totalMembers))
         self.soldProductsValue=QLabel()
         self.totalAmountValue=QLabel()
 
@@ -202,7 +194,7 @@ class Main(QMainWindow):
         self.statisticsLayout.addRow(QLabel("Total members: "), self.totalMembersValue)
         self.statisticsLayout.addRow(QLabel("Sold Products: "), self.soldProductsValue)
         self.statisticsLayout.addRow(QLabel("Total Amount: "),self.totalAmountValue)
-
+        self.tabs.blockSignals(False)#one at the end , but its not enough we should creat a funct ,to refresh our tabs
 
 
         ########################################################
@@ -218,8 +210,21 @@ class Main(QMainWindow):
     def funcSellProduct(self):
         self.sell=sellings.SellProduct()
 
-
-
+    def getSatistics(self):
+        countProducts=cur.execute(("SELECT count(product_id) FROM products")).fetchone()#fonction count qui somme le nombre de differents produit
+        countMembers=cur.execute(("SELECT count(member_id) FROM members")).fetchone()
+        soldProducts=cur.execute(("SELECT sum(selling_quantity) FROM sellings")).fetchone()
+        totalAmount=cur.execute(("SELECT sum(selling_amount) FROM sellings")).fetchone()
+        self.totalProductsValue.setText(str(countProducts[0]))
+        self.totalMembersValue.setText(str(countMembers[0]))
+        self.soldProductsValue.setText(str(soldProducts[0]))
+        self.totalAmountValue.setText(str(totalAmount[0] )+"euros")
+    ###############################the refresh function##########################
+    def tabChanged(self):
+        #here we call all the displaying functions, when a change has happened
+        self.displayProduct()
+        self.displayMembers()
+        self.getSatistics()
 
     def displayProduct(self):
         self.productTable.setFont(QFont("Times", 12))
