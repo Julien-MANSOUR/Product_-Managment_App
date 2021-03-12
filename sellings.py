@@ -139,15 +139,16 @@ class ConfirmWindow(QWidget):
         global productName, productId, memberName, memberId, quantity
         priceQuery=("SELECT product_price FROM products WHERE product_id=?")
         price=cur.execute(priceQuery,(productId,)).fetchone()
-        ammount=price[0]*quantity
-        print(ammount)
+        self.ammount=price[0]*quantity
+        print(self.ammount)
         self.ProductText=QLabel()
         self.ProductText.setText(productName)
         self.memberText=QLabel()
         self.memberText.setText(memberName)
-        self.ammountText=QLabel("{}x{}={}".format(price[0],quantity,ammount))
+        self.ammountText=QLabel("{}x{}={}".format(price[0],quantity,self.ammount))
         self.confirmBtn=QPushButton("Confirm")
-        
+        self.confirmBtn.clicked.connect(self.confirmFunc)
+
     def layouts(self):
         self.mainLayout=QVBoxLayout()
         self.topLayout=QVBoxLayout()
@@ -170,4 +171,31 @@ class ConfirmWindow(QWidget):
         self.mainLayout.addWidget(self.bottomFrame)
         self.setLayout(self.mainLayout)
 
-    
+    #####################Action functions########################
+    def confirmFunc(self):
+        global productName, productId, memberName, memberId, quantity
+        try:
+            sellingsQuery=("INSERT INTO 'sellings' (selling_product_id,selling_member_id,selling_quantity,selling_amount)  VALUES(?,?,?,?)  ")
+            cur.execute(sellingsQuery,(productId,memberId,quantity,self.ammount))
+            #we need a query for the quota to update it each time we sell products
+            qoutaQuery=("SELECT product_qouta FROM products WHERE product_id=?")
+            qouta=cur.execute(qoutaQuery,(productId,)).fetchone()#exemple : 20
+            print(qouta[0])
+            con.commit()
+
+            if quantity == qouta[0]:
+                updateQoutaQuery=("UPDATE products set product_qouta=?,product_availability=? WHERE product_id=?")
+                cur.execute(updateQoutaQuery,(0,'Unavailable',productId))
+                con.commit()
+                con.close()
+            else:
+                newQouta = qouta[0] - quantity  # 20-10=10
+                updateQoutaQuery = ("UPDATE products SET product_qouta=? WHERE product_id=? ")
+                cur.execute(updateQoutaQuery, (newQouta,productId))
+                con.commit()
+                con.close()
+
+            QMessageBox.information(self,"INFO","SUCCESS")
+
+        except :
+            QMessageBox.information(self, "INFO", "Something went wrong")
