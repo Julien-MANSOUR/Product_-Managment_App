@@ -1,6 +1,6 @@
 import sys, os
 import sqlite3
-import addproduct, addmember
+import addproduct, addmember,style
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
@@ -47,7 +47,9 @@ class SellProduct(QWidget):
         self.topLayout=QVBoxLayout()
         self.bottomLayout=QFormLayout()
         self.topFrame=QFrame()
+        self.topFrame.setStyleSheet(style.sellingsTopFrameStyle())
         self.bottomFrame=QFrame()
+        self.bottomFrame.setStyleSheet(style.sellingsBottomFrameStyle())
         #############################Adding top widgets#######################
         self.topLayout.addWidget(self.sellProductImg)
         self.topLayout.addWidget(self.sellProductText)
@@ -154,7 +156,9 @@ class ConfirmWindow(QWidget):
         self.topLayout=QVBoxLayout()
         self.bottomLayout=QFormLayout()
         self.topFrame=QFrame()
+        self.topFrame.setStyleSheet(style.sellingsTopFrameStyle())
         self.bottomFrame=QFrame()
+        self.bottomFrame.setStyleSheet(style.sellingsBottomFrameStyle())
         #############################Adding top widgets####################
         self.topLayout.addWidget(self.sellProductText)
         self.topLayout.addWidget(self.sellProductImg)

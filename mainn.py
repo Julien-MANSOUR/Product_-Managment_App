@@ -1,6 +1,6 @@
 import sys, os
 import sqlite3
-import addproduct, addmember , sellings
+import addproduct, addmember , sellings , style
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
@@ -18,7 +18,7 @@ class Main(QMainWindow):
         super().__init__()
         self.setWindowTitle("Product Manager")
         self.setWindowIcon(QIcon("icons/icon.ico"))
-        self.setGeometry(250, 250, 1000, 500)
+        self.setGeometry(250, 250, 1200, 600)
         self.setFixedSize(self.size())  # to fix windows size without minimize or maximize it
         self.UI()
         self.show()
@@ -93,12 +93,17 @@ class Main(QMainWindow):
         self.searchEntry.setPlaceholderText("Search For Products")
         self.searchButton = QPushButton("Search")
         self.searchButton.clicked.connect(self.searchProduct)
+        self.searchButton.setStyleSheet("QPushButton { background-color: #fcc324;  border-style:outset; border-style:outset; border-width: 2px ; border-radius:10px; border-color:beige; font:12px; padding:6px;min-width:6em;}"
+                                         "QPushButton:pressed { background-color: red;}" )
+
         ###################Right  middle Layout widgets###################
         self.allProducts = QRadioButton("All Products")
         self.availableProducts = QRadioButton("Available")
         self.notAvailableProducts = QRadioButton("Not Available")
         self.listButton = QPushButton("List")
         self.listButton.clicked.connect(self.listProducts)
+        self.listButton.setStyleSheet(("QPushButton { background-color: #9bc9ff;  border-style:outset; border-style:outset; border-width: 2px ; border-radius:10px; border-color:beige; font:12px; padding:6px;min-width:6em;}"
+                                         "QPushButton:pressed { background-color: red;}" ))
 
         #################################################
         ###################Tab2 Widgets###################
@@ -139,14 +144,18 @@ class Main(QMainWindow):
         self.rightTopLayout = QHBoxLayout()
         self.rightMiddleLayout = QHBoxLayout()
         self.topGroupBox = QGroupBox("Search Box")
+        self.topGroupBox.setStyleSheet(style.searchBoxStyle())#function outside the class
         self.middleGroupBox = QGroupBox("List Box")
+        self.middleGroupBox.setStyleSheet(style.listhBoxStyle())
+        self.bottomGroupBox = QGroupBox()
         ###################Add layouts###################
         self.mainLayout.addLayout(self.leftMainLayout, 70)
         self.leftMainLayout.addWidget(self.productTable)
         ##################Right Main Layout#####################
         self.mainLayout.addLayout(self.rightMainLayout, 30)
-        self.rightMainLayout.addWidget(self.topGroupBox)
-        self.rightMainLayout.addWidget(self.middleGroupBox)
+        self.rightMainLayout.addWidget(self.topGroupBox,20)
+        self.rightMainLayout.addWidget(self.middleGroupBox,20)
+        self.rightMainLayout.addWidget(self.bottomGroupBox,60)
         ##########Right top  Layout widgets##############
         self.rightTopLayout.addWidget(self.searchText)
         self.rightTopLayout.addWidget(self.searchEntry)
@@ -409,7 +418,9 @@ class DisplayMember(QWidget):
         self.topLayout=QVBoxLayout()
         self.bottomLayout=QFormLayout()
         self.topFrame=QFrame()
+        self.topFrame.setStyleSheet(style.memberTopFrameStyle())
         self.bottomFrame=QFrame()
+        self.bottomFrame.setStyleSheet(style.memberBottomFrameStyle())
 
         #######################Adding top layout widgets####################
         self.topLayout.addWidget(self.memberText)
@@ -529,7 +540,9 @@ class DisplayProduct(QWidget):
         self.topLayout = QVBoxLayout()
         self.bottomLayout = QFormLayout()
         self.topFrame = QFrame()
+        self.topFrame.setStyleSheet(style.productTopFrameStyle())
         self.bottomFrame = QFrame()
+        self.bottomFrame.setStyleSheet(style.productBottomFrameStyle())
         ####################adding top widgets ##############
         self.topLayout.addWidget(self.productText)
         self.topLayout.addWidget(self.product_Img)
